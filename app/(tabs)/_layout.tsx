@@ -2,6 +2,7 @@ import {Image, Text, View, ImageBackground} from 'react-native';
 import {Tabs, useSegments} from "expo-router";
 import {images} from "@/constants/images";
 import {icons} from "@/constants/icons";
+import {UserProvider} from "@/contexts/UserContext";
 
 const TabIcon = ({focused, icon, title}: any) => {
     if (focused){
@@ -26,88 +27,90 @@ const TabIcon = ({focused, icon, title}: any) => {
 
 const _Layout = () => {
     return (
-        <Tabs
-            screenOptions = {{
-                tabBarShowLabel: false,
-                tabBarItemStyle: {
-                    width: "25%",
-                    height: "100%",
-                    justifyContent: "center",
-                    alignItems: "center",
-                },
-                tabBarStyle: {
-                    backgroundColor: "#ffe4ef",
-                    borderRadius: 23,
-                    marginHorizontal: 20,
-                    marginBottom: 36,
-                    height: 50,
-                    position: "absolute",
-                    overflow: "hidden",
-                    paddingHorizontal: 8,
-                    borderColor: 'transparent',
-                }
-            }}
-        >
-            <Tabs.Screen
-                name="index"
-                options={{
-                    title: "Home",
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => (
-                        <TabIcon
-                            focused={focused}
-                            icon={icons.home}
-                            title="Home"
-                        />
-                    )
+        <UserProvider>
+            <Tabs
+                screenOptions = {{
+                    tabBarShowLabel: false,
+                    tabBarItemStyle: {
+                        width: "25%",
+                        height: "100%",
+                        justifyContent: "center",
+                        alignItems: "center",
+                    },
+                    tabBarStyle: {
+                        backgroundColor: "#ffe4ef",
+                        borderRadius: 23,
+                        marginHorizontal: 20,
+                        marginBottom: 36,
+                        height: 50,
+                        position: "absolute",
+                        overflow: "hidden",
+                        paddingHorizontal: 8,
+                        borderColor: 'transparent',
+                    }
                 }}
-            />
+            >
+                <Tabs.Screen
+                    name="index"
+                    options={{
+                        title: "Home",
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => (
+                            <TabIcon
+                                focused={focused}
+                                icon={icons.home}
+                                title="Home"
+                            />
+                        )
+                    }}
+                />
 
-            <Tabs.Screen
-                name="search"
-                options={{
-                    title: "Search",
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => (
-                        <TabIcon
-                            focused={focused}
-                            icon={icons.search}
-                            title="Search"
-                        />
-                    )
-                }}
-            />
+                <Tabs.Screen
+                    name="search"
+                    options={{
+                        title: "Search",
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => (
+                            <TabIcon
+                                focused={focused}
+                                icon={icons.search}
+                                title="Search"
+                            />
+                        )
+                    }}
+                />
 
-            <Tabs.Screen
-                name="saved"
-                options={{
-                    title: "Saved",
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => (
-                        <TabIcon
-                            focused={focused}
-                            icon={icons.saved}
-                            title="Saved"
-                        />
-                    )
-                }}
-            />
+                <Tabs.Screen
+                    name="saved"
+                    options={{
+                        title: "Saved",
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => (
+                            <TabIcon
+                                focused={focused}
+                                icon={icons.saved}
+                                title="Saved"
+                            />
+                        )
+                    }}
+                />
 
-            <Tabs.Screen
-                name="profile"
-                options={{
-                    title: "Profile",
-                    headerShown: false,
-                    tabBarIcon: ({ focused }) => (
-                        <TabIcon
-                            focused={focused}
-                            icon={icons.profile}
-                            title="Profile"
-                        />
-                    )
-                }}
-            />
-        </Tabs>
+                <Tabs.Screen
+                    name="profile"
+                    options={{
+                        title: "Profile",
+                        headerShown: false,
+                        tabBarIcon: ({ focused }) => (
+                            <TabIcon
+                                focused={focused}
+                                icon={icons.profile}
+                                title="Profile"
+                            />
+                        )
+                    }}
+                />
+            </Tabs>
+        </UserProvider>
     );
 }
 
