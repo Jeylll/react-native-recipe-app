@@ -25,7 +25,7 @@ const TabIcon = ({focused, icon, title}: any) => {
     )
 }
 
-const _Layout = () => {
+const _RootLayout = () => {
     return (
         <UserProvider>
             <Tabs
@@ -114,4 +114,4 @@ const _Layout = () => {
     );
 }
 
-export default _Layout;
+export default _RootLayout;

@@ -7,17 +7,28 @@ import {
     StyleSheet,
     ImageBackground,
 } from 'react-native';
+import Animated, { FadeInUp } from 'react-native-reanimated';
 import InputField from '../../components/InputField';
-import Animated, {FadeInUp} from 'react-native-reanimated';
+import { useUser } from '@/hooks/useUser';
+import Toast from '../../components/Toast';
 
-export default function SignUpScreen() {
+export default function LoginScreen() {
     const router = useRouter();
-    const [email, setEmail] = React.useState('');
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
-    const handleSubmit = () => {
-        console.log('Registered in successfully', email, username, password);
-    }
+    const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+    const { login } = useUser();
+
+    const handleSubmit = async () => {
+        setToastMessage(null);
+
+        try {
+            await login(username, password);
+        } catch (err: unknown) {
+            const msg = err instanceof Error ? err.message : String(err);
+            setToastMessage(msg);
+        }
+    };
 
     return (
         <View style={styles.wrapper}>
@@ -27,15 +38,9 @@ export default function SignUpScreen() {
                 resizeMode="cover"
             >
                 <Animated.View entering={FadeInUp.delay(200).duration(1000)} style={styles.container}>
-                    <Text style={styles.title}>Sign Up</Text>
+                    <Text style={styles.title}>Login</Text>
 
-                    <View style={styles.form}>
-                        <InputField
-                            placeholder="Email"
-                            placeholderTextColor="#b0b0b0"
-                            onChangeText={(email) => setEmail(email)}
-                            value={email}
-                        />
+                    <View className={"w-full px-6 mb-4"}>
                         <InputField
                             placeholder="Username"
                             placeholderTextColor="#b0b0b0"
@@ -52,8 +57,17 @@ export default function SignUpScreen() {
                     </View>
 
                     <TouchableOpacity style={styles.primaryButton} onPress={handleSubmit}>
-                        <Text style={styles.primaryButtonText}>Sign up</Text>
+                        <Text style={styles.primaryButtonText}>Login</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.linkButton}
+                        onPress={() => router.push('/screens/SignUpScreen')}
+                    >
+                        <Text style={styles.linkButtonText}>Go to SignUp</Text>
+                    </TouchableOpacity>
+
+                    <Toast message={toastMessage} onDismiss={() => setToastMessage(null)} />
                 </Animated.View>
             </ImageBackground>
         </View>
@@ -72,13 +86,6 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
     },
     title: { fontSize: 36, color: '#fff', fontWeight: '700', marginBottom: 12 },
-
-    /* form layout */
-    form: {
-        width: '100%',
-        marginBottom: 10,
-        paddingHorizontal: 8,
-    },
 
     /* primary button */
     primaryButton: {

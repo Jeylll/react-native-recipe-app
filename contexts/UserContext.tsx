@@ -1,5 +1,6 @@
-// contexts are used to share data globlly
 import React, { createContext, useState, ReactNode } from 'react';
+import { account } from '@/services/appwrite';
+import { ID } from 'appwrite';
 
 interface User {
     id?: string;
@@ -9,7 +10,7 @@ interface User {
 
 interface UserContextType {
     user: User | null;
-    login: (username: string, password: string) => Promise<void>;
+    login: (emailOrUsername: string, password: string) => Promise<void>;
     signup: (email: string, username: string, password: string) => Promise<void>;
     logout: () => Promise<void>;
 }
@@ -19,17 +20,40 @@ export const UserContext = createContext<UserContextType | undefined>(undefined)
 export const UserProvider = ({ children }: { children: ReactNode }): React.ReactElement => {
     const [user, setUser] = useState<User | null>(null);
 
-    async function login(username: string, password: string) {
-        // Implement login logic here
+    async function login(emailOrUsername: string, password: string) {
+        try {
+            await (account as any).createSession(emailOrUsername, password);
+            const response = await account.get();
+            setUser({
+                id: (response as any).$id,
+                email: (response as any).email,
+                username: (response as any).name ?? (response as any).username,
+            });
+        } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : String(error);
+            throw new Error(`login error: ${msg}`);
+        }
     }
 
     async function signup(email: string, username: string, password: string) {
-        // Implement signup logic here
+        try {
+            await (account as any).create(ID.unique(), email, password, username);
+            await login(email, password);
+        } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : String(error);
+            throw new Error(`signup error: ${msg}`);
+        }
     }
 
     async function logout() {
-        // Implement logout logic here
-        setUser(null);
+        try {
+            await (account as any).deleteSession('current');
+        } catch (error: unknown) {
+            const msg = error instanceof Error ? error.message : String(error);
+            throw new Error(`logout error: ${msg}`);
+        } finally {
+            setUser(null);
+        }
     }
 
     return (
